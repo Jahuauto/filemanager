@@ -5,6 +5,8 @@ use lib\Filemanager;
 
 $fileManager = new Filemanager();
 
+
+echo "<pre>";
 echo $fileManager->isFileExist('filename.txt');
 
 
@@ -15,3 +17,4 @@ $fileName = __Dir__ . '/tmp.txt';
 
 $fileManager->createDir([$dirName . '/test1', $dirName . '/test2']);
 
+$fileManager->deleteDirectory($dirName);

@@ -5,6 +5,12 @@ use Exception;
 
 class Filemanager
 {
+    /**
+     * Check the exist filename
+     *
+     * @param string $fileName The full path of the filename
+     * @return bool
+     */
     public function isFileExist($fileName)
     {
         if (is_file($fileName) && stream_is_local($fileName)) {
@@ -13,14 +19,28 @@ class Filemanager
         return false;
     }
 
+    /**
+     * Check the exist directory
+     *
+     * @param string $dirName The full path of the directory
+     * @return bool
+     */
     public function isDirectoryExist($dirName)
     {
-        (string) $dirName = basename($dirName);
-        if (is_dir($dirName)){
+        $dirNamePath = dirname($dirName);
+        if (is_dir($dirNamePath)){
             return true;
         }
         return false;
     }
+
+    /**
+     *  Convert input variable to array
+     *
+     * @param string|array $files
+     * @return array
+     * @throws Exception When input $files is differ than string and array
+     */
     private function toArray($files){
         if (is_array($files)){
             return $files;
@@ -31,10 +51,16 @@ class Filemanager
         }
         throw new Exception('Error input data');
     }
-    
 
-//    TODO: dokonczyc te function 
-
+    /**
+     *  Copy file or directory
+     *
+     * @param string $fromFile The file source from full path
+     * @param string $toFile The file destination full path
+     *
+     * @return void
+     * @throws Exception When cannot copy file source, or when cannon write file destination
+     */
     public function copyFile($fromFile, $toFile) {
 
         if (true !== $this->isFileExist($fromFile)) {
@@ -46,16 +72,25 @@ class Filemanager
         }
 
         if (false === $sourceFromFile = @fopen($fromFile, 'r')) {
-            throw new Exception(sprintf('Failed : Cannot open file  "%s" copy.', $originFile));
+            throw new Exception(sprintf('Failed : Cannot open file  "%s" copy to copy.', $fromFile));
         }
         if (false === $sourceToFrom = @fopen($toFile, 'w')) {
-            throw new Exception(sprintf('Failed: Cannot open file to write.', $targetFile));
+            throw new Exception(sprintf('Failed: Cannot open file "%s" to write.', $toFile));
         }
         stream_copy_to_stream($sourceFromFile, $sourceToFrom);
         fclose($sourceFromFile);
         fclose($sourceToFrom);
     }
 
+    /**
+     *  Rename dir or file
+     *
+     * @param string $newName The file or directory full path
+     * @param string $oldName The file or directory full path
+     *
+     * @return void
+     * @throws Exception On rename finished failure
+     */
     public function changeName ($oldName, $newName){
         if (true === $this->isFileExist($oldName) || true === $this->isDirectoryExist($oldName))
         {
@@ -64,6 +99,47 @@ class Filemanager
             }
         }   
     }
+
+    /**
+     * Delete directory
+     * @param string|array $dirs The full path to directories to delete
+     * @throws Exception
+     */
+    public function deleteDirectory($dirs)
+    {
+        foreach ($this->toArray($dirs) as $dir){
+            if ($this->isDirectoryExist($dir)){
+                $files = array_diff(scandir($dir), array('.','..'));
+                foreach ($files as $file) {
+                    (is_dir("$dir/$file")) ? $this->deleteDirectory("$dir/$file") : $this->deleteFiles("$dir/$file");
+                }
+            }
+        }
+    }
+
+    /**
+     * Delete file
+     * @param string|array $files The full path to file to delete
+     *
+     * @return void
+     * @throws Exception
+     */
+    public function deleteFiles($files)
+    {
+        foreach ($this->toArray($files) as $file) {
+            if ($this->isFileExist($file)) {
+                if (true !== unlink($file)) {
+                    throw new Exception(printf('Cannot delete "$s"', $file));
+                }
+            }
+        }
+    }
+
+    /**
+     * @param string|array $dirs Create new directory
+     * @param int $mode Unix
+     * @throws Exception
+     */
     public function createDir ($dirs, $mode = 0777){
         foreach ($this->toArray($dirs) as $dir) {
             if (false === $this->isDirectoryExist($dir)){
