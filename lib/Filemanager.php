@@ -35,27 +35,25 @@ class Filemanager
 
 //    TODO: dokonczyc te function 
 
-    public function copyFile($fromFile, $toFile){
-        
-        if (true !== $this->isFileExist($fromFile)){
-            throw new Exception(printf('File "%s" not exist',$fromFile));
+    public function copyFile($fromFile, $toFile) {
+
+        if (true !== $this->isFileExist($fromFile)) {
+            throw new Exception(printf('File "%s" not exist', $fromFile));
         }
-        
-        if (true !== $this->isDirectoryExist($toFile)){
+
+        if (true !== $this->isDirectoryExist($toFile)) {
             $this->createDir(basename($toFile));
         }
-        
-        if (false === $sourceFromFile = @fopen($fromFile, 'r')) {
-                throw new Exception(sprintf('Failed to copy "%s" to "%s" because source file could not be opened for reading.', $originFile, $targetFile));
-            }
 
-           
-            if (false === $sourceToFrom = @fopen($toFile, 'w')) {
-                throw new Exception(sprintf('Failed to copy "%s" to "%s" because target file could not be opened for writing.', $originFile, $targetFile));
-            }          
-            stream_copy_to_stream($sourceFromFile, $sourceToFrom);
-            fclose($sourceFromFile);
-            fclose($sourceToFrom);             
+        if (false === $sourceFromFile = @fopen($fromFile, 'r')) {
+            throw new Exception(sprintf('Failed : Cannot open file  "%s" copy.', $originFile));
+        }
+        if (false === $sourceToFrom = @fopen($toFile, 'w')) {
+            throw new Exception(sprintf('Failed: Cannot open file to write.', $targetFile));
+        }
+        stream_copy_to_stream($sourceFromFile, $sourceToFrom);
+        fclose($sourceFromFile);
+        fclose($sourceToFrom);
     }
 
     public function changeName ($oldName, $newName){
