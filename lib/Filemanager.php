@@ -31,6 +31,10 @@ class Filemanager
         }
         throw new Exception('Error input data');
     }
+    
+
+//    TODO: dokonczyc te function 
+
     public function copyFile($fromFile, $toFile){
         
         if (true !== $this->isFileExist($fromFile)){
