@@ -72,7 +72,7 @@ class Filemanager
         }
 
         if (false === $sourceFromFile = @fopen($fromFile, 'r')) {
-            throw new Exception(sprintf('Failed : Cannot open file  "%s" copy to copy.', $fromFile));
+            throw new Exception(sprintf('Failed: Cannot open file  "%s" copy to copy.', $fromFile));
         }
         if (false === $sourceToFrom = @fopen($toFile, 'w')) {
             throw new Exception(sprintf('Failed: Cannot open file "%s" to write.', $toFile));
@@ -144,7 +144,7 @@ class Filemanager
         foreach ($this->toArray($dirs) as $dir) {
             if (false === $this->isDirectoryExist($dir)){
                 if (true !== @mkdir($dir, $mode, true)) {
-                    throw new Exception(printf('Filed create new dir "%s"', $dir));
+                    throw new Exception(printf('Filed create new directory "%s"', $dir));
                 }
             }
         }
